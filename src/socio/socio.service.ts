@@ -23,6 +23,9 @@ export class SocioService{
     }
 
     async create(socio: SocioEntity): Promise<SocioEntity> {
+        if (!this.isValidEmail(socio.correo)) {
+            throw new BusinessLogicException('El correo debe contener el carácter @', BusinessError.BAD_REQUEST);
+        }
         return await this.socioRepository.save(socio);
     }
 
@@ -31,9 +34,19 @@ export class SocioService{
         if (!persistedSocio)
           throw new BusinessLogicException("No se pudo encontrar el socio con el id indicado.", BusinessError.NOT_FOUND);
        
-        socio.id = id; 
+        socio.id = id;
+        
+        if (!this.isValidEmail(socio.correo)) {
+            throw new BusinessLogicException('El correo debe contener el carácter @', BusinessError.BAD_REQUEST);
+        }
        
         return await this.socioRepository.save(socio);
+    }
+
+    private isValidEmail(correo: string): boolean {
+        // Utiliza una expresión regular para validar el correo
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(correo);
     }
 
     async delete(id: string) {
