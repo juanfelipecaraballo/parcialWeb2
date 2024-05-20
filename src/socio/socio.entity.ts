@@ -14,7 +14,7 @@ export class SocioEntity {
     correo: string;
 
     @Column()
-    fecha_nacimiento: Date;
+    fecha_nacimiento: string;
 
     @ManyToMany(() => ClubEntity, club => club.socios)
     clubs: ClubEntity[];
